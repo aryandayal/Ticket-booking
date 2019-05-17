@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Ticket App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: lightcyan;
+      font-family: sans-serif;
+    }
+
+    #container {
+      margin: 0 auto;
+      margin-top: 10px;
+      width: 70%;
+    }
+
+    form {
+      margin-top: 10px;
+    }
+
+    fieldset {
+      padding: 10px;
+    }
+
+    .text-input,
+    .button-input {
+      float: left;
+      width: 50%;
+      padding: 10px 0;
+    }
+
+    label,
+    input {
+      display: block;
+      width: 90%;
+    }
+
+    input[type=button], input[type=reset], button {
+      height: 40px;
+      font-size: 1.2em;
+    }
+    #show {
+      width: 95%;
+      margin-bottom: 10px;
+    }
+
+    .passenger {
+      background-color: lightgrey;
+      color: black;
+      border-radius: 4px;
+      padding: 4px;
+      width: 45%;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .remove {
+      position: absolute;
+      cursor: pointer;
+      right: 10px;
+    }
+
+    .remove:hover {
+      color: red;
+    }
+
+    table {
+      margin-top: 10px;
+    }
+    table th,td {
+      padding: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container">
+    <h1>Ticket Booking</h1>
+    <hr>
+    <form id="ticket-application-form">
+      <div class="text-input">
+        <label for="train">Train No & Name: </label>
+        <input type="text" name="train" id="train" />
+      </div>
+      <div class="text-input">
+        <label for="date-of-journey">Date of journey: </label>
+        <input type="text" name="date-of-journey" id="date-of-journey" />
+      </div>
+      <div class="text-input">
+        <label for="class">Class: </label>
+        <input type="text" name="class" id="class" />
+      </div>
+      <div class="text-input">
+        <label for="no-of-birth">Number of Birth/Seat: </label>
+        <input type="text" name="no-of-birth" id="no-of-birth" />
+      </div>
+      <div class="text-input">
+        <label for="source">Source:</label>
+        <input type="text" name="source" id="source" />
+      </div>
+      <div class="text-input">
+        <label for="destination">Destination: </label>
+        <input type="text" name="destination" id="destination" />
+      </div>
+      <div class="text-input">
+        <label for="boarding-at">Boarding at: </label>
+        <input type="text" name="boarding-at" id="boarding-at" />
+      </div>
+      <div class="text-input">
+        <label for="Reservation-upto">Reservation upto: </label>
+        <input type="text" name="reservation-upto" id="reservation-upto" />
+      </div>
+
+      <fieldset>
+        <legend>Passengers:</legend>
+        <div id="passengers-list"></div>
+        <div class="text-input">
+          <label for="full-name">Full Name: </label>
+          <input type="text" name="full-name" id="full-name" />
+        </div>
+        <div class="text-input">
+          <label for="gender">Gender: </label>
+          <input type="text" name="gender" id="gender" />
+        </div>
+        <div class="text-input">
+          <label for="age">Age: </label>
+          <input type="text" name="age" id="age" />
+        </div>
+        <div class="text-input">
+          <label for="choice">Choice: </label>
+          <input type="text" name="choice" id="choice" />
+        </div>
+        <div class="button-input">
+          <input type="button" value="Add Passenger" onclick="addPassenger()" />
+        </div>
+      </fieldset>
+
+      <div class="text-input">
+        <label for="applicant">Name Of Applicant: </label>
+        <input type="text" name="applicant" id="applicant" />
+      </div>
+      <div class="text-input">
+        <label for="address">Address: </label>
+        <input type="text" name="address" id="address" />
+      </div>
+      <div class="text-input">
+        <label for="mobile">Mobile: </label>
+        <input type="text" name="mobile" id="mobile" />
+      </div>
+      <div class="text-input">
+        <br><br><br>
+      </div>
+      <div class="button-input">
+        <input type="button" value="Submit Application" onclick="apply()"/>
+      </div>
+      <div class="button-input">
+          <input type="reset" value="Reset Form" />
+      </div>
+    </form>
+
+    <button type="button" id="show" onclick="showTicket()">Show tickets</button>
+    <div id="tickets">
+    </div>
+  </div>  
+    <script>
+      var tickets = [];
+      var passengers = [];
+
+      function addPassenger() {
+        var fullname = document.querySelector("#full-name");
+        var gender = document.querySelector("#gender");
+        var age = document.querySelector("#age");
+        var choice = document.querySelector("#choice");
+
+        var passenger = {
+          id: passengers.length + 1,
+          fullname: fullname.value,
+          gender: gender.value,
+          age: age.value,
+          choice: choice.value
+        }
+
+        passengers.push(passenger);
+
+        var passengerElement =
+        `<div class='passenger' data-passenger="${passenger.id}">
+          ${passenger.fullname}
+          <span class="remove" onclick="removePassenger(this.parentNode)">x</span>
+        </div>`;
+
+        document.querySelector("#passengers-list")
+          .innerHTML += passengerElement;
+      }
+
+      function removePassenger(passenger) {
+        var id = passenger.getAttribute("data-passenger");
+
+        for(let passenger of passengers)
+          if(id == passenger.id)
+            passengers.splice(passengers.indexOf(passenger), 1);
+        document.querySelector("#passengers-list").removeChild(passenger);
+      }
+
+      function apply() {
+        var train = document.querySelector("#train");
+        var dateOfJourney = document.querySelector("#date-of-journey");
+        var class_ = document.querySelector("#class");
+        var noOfBirth = document.querySelector("#no-of-birth");
+        var source = document.querySelector("#source");
+        var destination = document.querySelector("#destination");
+        var boardingAt = document.querySelector("#boarding-at");
+        var reservationUpto = document.querySelector("#reservation-upto");
+        var applicant = document.querySelector("#applicant");
+        var address = document.querySelector("#address");
+        var mobile = document.querySelector("#mobile");
+
+        var ticket = {
+          train: train.value,
+          dateOfJourney: dateOfJourney.value,
+          class_: class_.value,
+          noOfBirth: noOfBirth.value,
+          source: source.value,
+          destination: destination.value,
+          boardingAt: boardingAt.value,
+          reservationUpto: reservationUpto.value,
+          passengers: passengers,
+          applicant: applicant.value,
+          address: address.value,
+          mobile: mobile.value
+        }
+
+        tickets.push(ticket);
+
+        document.querySelector("#passengers-list").innerHTML = "";
+        passengers = [];
+
+        alert("Applied Successfully");
+      }
+
+
+      function showTicket() {
+        var ticketHolder = document.querySelector("#tickets");
+        var vTicket = '';
+        var i, j;
+
+        i = 1;
+        for(let ticket of tickets) {
+          vTicket += `<table border="1">
+          <caption>Ticket #${i++}</caption>
+          <tr>
+            <th>Train No & Name</th>
+            <td>${ticket.train}</td>
+          </tr>
+          <tr>
+            <th>Date</th>
+            <td>${ticket.dateOfJourney}</td>
+          </tr>
+          <tr>
+            <th>Class</th>
+            <td>${ticket.class_}</td>
+          </tr>
+          <tr>
+            <th>Number of Birth/Seat</th>
+            <td>${ticket.noOfBirth}</td>
+          </tr>
+          <tr>
+            <th>From</th>
+            <td>${ticket.source}</td>
+          </tr>
+          <tr>
+            <th>To</th>
+            <td>${ticket.destination}</td>
+          </tr>
+          <tr>
+            <th>Passengers</th>
+            <td>
+              <table border="1">
+                <tr>
+                  <th>Sr.</th>
+                  <th>Full Name</th>
+                  <th>Age</th>
+                  <th>Gender</th>
+                  <th>Choice</th>
+                </tr>`;
+            
+            j = 1;
+            for(let passenger of ticket.passengers) {
+              vTicket += 
+              `<tr>
+                <td>${j++}</td>
+                <td>${passenger.fullname}</td>
+                <td>${passenger.age}</td>
+                <td>${passenger.gender}</td>
+                <td>${passenger.choice}</td>
+              </tr>`;
+            }
+          
+          vTicket += 
+          `</table></td>
+          </tr>
+          <tr>
+            <th>Boarding At</th>
+            <td>${ticket.boardingAt}</td>
+          </tr>
+          <tr>
+            <th>Note</th>
+            <td>Journey Cum Travel Ticket <br>
+                valid only with an Id proof
+            </td>
+          </tr>
+          </table>`;
+        }
+
+        ticketHolder.innerHTML = vTicket;
+      }
+
+    </script>
+  </div>
+</body>
+
+</html>
