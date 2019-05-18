@@ -1,5 +1,5 @@
 # simple-ticket-booking
-Basic javascript object based learning 
+Basic javascript object-based learning 
 
 - JavaScript
 - HTML
